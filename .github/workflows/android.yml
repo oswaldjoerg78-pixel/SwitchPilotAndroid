@@ -1,0 +1,25 @@
+ - name: Java 17 einrichten
+    uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: "17"
+
+  - name: Android SDK einrichten
+    uses: android-actions/setup-android@v3
+
+  - name: Android SDK installieren
+    run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+  - name: Gradle herunterladen
+    run: |
+      curl -L --fail -o /tmp/gradle.zip https://services.gradle.org/distributions/gradle-8.9-bin.zip
+      unzip -q /tmp/gradle.zip -d /tmp
+
+  - name: APK bauen
+    run: /tmp/gradle-8.9/bin/gradle assembleDebug --no-daemon
+
+  - name: APK bereitstellen
+    uses: actions/upload-artifact@v4
+    with:
+      name: SwitchPilot-debug-APK
+      path: app/build/outputs/apk/debug/app-debug.apk
